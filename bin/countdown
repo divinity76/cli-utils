@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+if($argc<2){
+die("error: usage: {$argv[0]} time");
+}
+$args=$argv;
+unset($args[0]);
+$args=trim(implode(" ",$args));
+$time=strtotime($args);
+if($time===false){
+        echo("error: could not understand time: ");
+        var_dump($args);
+        die(1);
+}
+for(;;){
+        $remaining=$time-time();
+        if($remaining<1){
+        var_dump($remaining);
+                exit(0);
+        }
+        echo "\r{$remaining}s..";
+}
+
+

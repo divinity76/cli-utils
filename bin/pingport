@@ -1,0 +1,83 @@
+#!/usr/bin/env php
+<?php
+if ($argc < 3 || $argc > 4) {
+	echo "usage: {$argv[0]} ip port [timeout_seconds]\n";
+	exit ( 1 );
+}
+$ip = filter_var ( $argv [1], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME );
+if (false === $ip) {
+	die ( "error: \"{$argv[1]}\" does not look like an ip.\n" );
+}
+$port = filter_var ( $argv [2], FILTER_VALIDATE_INT, array (
+		'options' => array (
+				'default' => false, // value to return if the filter fails
+				                    // other options here
+				'min_range' => 1,
+				'max_range' => 65535 
+		),
+		'flags' => 0 
+) );
+if (false === $port) {
+	die ( "error: port (argument 2) is not an int between 1 and 65535." );
+}
+$timeout_seconds = NULL;
+if ($argc === 4) {
+	$timeout_secods = $port = filter_var ( $argv [3], FILTER_VALIDATE_INT, array (
+			'options' => array (
+					'default' => false, // value to return if the filter fails
+					                    // other options here
+					'min_range' => 0,
+					'max_range' => PHP_INT_MAX 
+			),
+			'flags' => 0 
+	) );
+	if (false === $timeout_seconds) {
+		die ( "argument 3 (timeout_seconds) is not a valid number between 0 and " . PHP_INT_MAX );
+	}
+} else {
+	$timeout_seconds = PHP_INT_MAX;
+}
+$starttime = microtime ( true );
+if (0) {
+	require_once ('hhb_.inc.php');
+	hhb_var_dump ( $ip, $port, $timeout_seconds );
+	die ( "hi!\n" );
+}
+function last_success(bool $update = false) {
+	static $lst = NULL;
+	if ($update) {
+		$lst = microtime ( true );
+	}
+	if ($lst === NULL) {
+		return "(last success: never)";
+	}
+	return "(last success: " . round ( microtime ( true ) - $lst, 3 ) . "s)";
+}
+for(;;) {
+	$errno = NULL;
+	$errstr = NULL;
+	$fp = @fsockopen ( $ip, $port, $errno, $errstr, 4 );
+	echo "\rerrno: {$errno} errstr: \"{$errstr}\" " . last_success ( ! ! $fp );
+	if ($fp) {
+		fclose ( $fp );
+		for(;;) {
+			cli_alert ();
+			sleep ( 1 );
+		}
+	} else {
+		if ((microtime ( true ) - $starttime) > $timeout_seconds) {
+			cli_alert ();
+		}
+	}
+	echo str_repeat ( " ", 20 );
+	sleep ( 1 );
+}
+function cli_alert() {
+	fprintf ( STDOUT, "%s", "\x07" );
+	if (is_callable ( 'ncurses_flash' )) {
+		@ncurses_flash ();
+	}
+	if (is_callable ( 'ncurses_beep' )) {
+		@ncurses_beep ();
+	}
+}

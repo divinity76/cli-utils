@@ -10,7 +10,15 @@ i guess it would be appropriate to set the permissions to 0555 and the owner to 
 
 here is a little install script: 
 
-```git clone --depth 1 https://github.com/divinity76/cli-utils.git && sudo chown -Rv root:root cli-utils/bin/* && sudo mv -v cli-utils/bin/* /usr/local/bin/ && rm -rfv cli-utils/ && echo "OK INSTALLED"```
+```sh
+git clone --depth 1 https://github.com/divinity76/cli-utils.git && \
+sudo chown -Rv root:root cli-utils/bin/* && \
+sudo mv -v cli-utils/bin/* /usr/local/bin/ && \
+rm -rfv cli-utils/ && \
+echo "OK INSTALLED"
+```
+
+.. if last line says "OK INSTALLED", then the installation was probably successful.
 
 # documentation
 

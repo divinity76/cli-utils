@@ -19,6 +19,7 @@ for(;;){
                 exit(0);
         }
         echo "\r{$remaining}s..";
+	sleep(1);
 }
 
 

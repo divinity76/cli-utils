@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+if($argc>1){
+$args=$argv;
+unset($args[0]);
+echo "ALARM: ".implode(" ",$args)."\n";
+}
+function alarm(){
+    for(;;){
+        file_put_contents("/dev/tty","\x07",FILE_APPEND);
+        sleep(1);
+    }
+}
+alarm();
+
+

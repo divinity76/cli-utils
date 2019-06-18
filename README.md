@@ -1,7 +1,16 @@
 # cli-utils
 cli utilities
 
-to install, copy the contents of the "bin" folder to /usr/local/bin
+# installation
+
+copy the contents of the "bin" folder to /usr/local/bin
+
+i guess it would be appropriate to set the permissions to 0555 and the owner to root:root as well.
+
+
+here is a little install script: 
+
+```git clone --depth 1 https://github.com/divinity76/cli-utils.git && sudo chown -Rv root:root cli-utils/bin/* && sudo mv -v cli-utils/bin/* /usr/local/bin/ && rm -rfv cli-utils/ && echo "OK INSTALLED"```
 
 # documentation
 

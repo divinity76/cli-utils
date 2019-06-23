@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+argv_special_exceptions();
 if ($argc < 3 || $argc > 4) {
 	echo "usage: {$argv[0]} ip port [timeout_seconds]\n";
 	exit ( 1 );
@@ -80,4 +81,21 @@ function cli_alert() {
 	if (is_callable ( 'ncurses_beep' )) {
 		@ncurses_beep ();
 	}
+}
+function argv_special_exceptions(){
+	global $argc,$argv;
+	if($argc<3){
+		return;
+	}
+	$special=["ssh","mosh"];
+	$lower=strtolower($argv[1]);
+	if(in_array($lower,$special,true)){
+		--$argc;
+		unset($argv[1]);
+		$argv=array_values($argv);
+	}
+	if(false!==strpos($argv[1],'@')){
+		$argv[1]=explode('@',$argv[1])[1];
+	}
+	return;
 }
